@@ -1,0 +1,44 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: goomer-postgres
+    restart: always
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=goomer
+      - POSTGRES_PASSWORD=goomer
+      - POSTGRES_DB=goomer
+    ports:
+      - "5432:5432"
+    networks:
+      - goomer-network
+  php:
+    build: etc/php-fpm
+    container_name: goomer-php
+    restart: always
+    volumes:
+      - ./:/var/www/laravel
+    networks:
+      - goomer-network
+  nginx:
+    build: etc/nginx
+    container_name: goomer-api
+    restart: always
+    ports:
+      - '8000:80'
+    depends_on:
+      - php
+    links:
+      - php
+    volumes:
+      - ./logs/nginx/:/var/log/nginx
+    networks:
+      - goomer-network
+networks:
+  goomer-network:
+    driver: bridge
+volumes:
+  postgres-data:
+
