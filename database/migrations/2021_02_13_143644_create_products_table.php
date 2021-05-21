@@ -17,9 +17,12 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('photo');
-            $table->string('description');
+            $table->string('category');
             $table->float('price');
             $table->float('promotional_price')->nullable();
+            $table->string('promotional_description')->nullable();
+            $table->boolean('active_promotion')->default(false);
+            $table->json('hours_promotion')->nullable();
             $table->bigInteger('restaurant_id');
             $table->foreign('restaurant_id')->references('id')->on('restaurants');
             $table->softDeletes();

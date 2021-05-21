@@ -10,10 +10,6 @@ interface IRepository
 
     public function show($id);
 
-    public function store(Array $array);
-
-    public function update(Array $array, $id);
-
     public function destroy($id);
 
     public function paginate($limit = 20);

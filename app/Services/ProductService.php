@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Dto\ProductDto;
 use App\Repositories\Interfaces\IProductRepository;
 use App\Services\Interfaces\IProductService;
+use App\Validators\ProductValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,55 +19,59 @@ class ProductService extends Service implements IProductService
         $this->repository = $repository;
     }
 
+    function store(Request $request) {
 
-    function store(Request $request){
-
-        $validator = $this->validator($request);
+        $validator = $this->validator($request, ProductValidator::create());
 
         if($validator->fails()){
             return $validator->errors();
         }
 
-        $product = $request->only(
-            ['photo', 'name', 'description', 'price', 'promotional_price', 'restaurant_id']
+        $product = new ProductDto(
+            $request->photo,
+            $request->name,
+            $request->category,
+            $request->price,
+            $request->promotional_price,
+            $request->promotional_description,
+            $request->active_promotion,
+            $request->hours_promotion,
+            $request->restaurant_id,
         );
 
         return $this->repository->store($product);
     }
 
     function update(Request $request, $id){
-        $validator = $this->validator($request);
+        $validator = $this->validator($request, ProductValidator::update());
 
         if($validator->fails()){
             return $validator->errors();
         }
 
-        $product = $request->only(
-            ['photo', 'name', 'description', 'price', 'promotional_price', 'restaurant_id']
+        $product = new ProductDto(
+            $request->photo,
+            $request->name,
+            $request->category,
+            $request->price,
+            $request->promotional_price,
+            $request->promotional_description,
+            $request->active_promotion,
+            $request->hours_promotion,
+            $request->restaurant_id,
         );
 
-        return $this->repository->update($product, $id);
+        $product->addId($id);
+
+        return $this->repository->update($product);
     }
 
-    function validator($request) {
-
-        $validator = Validator::make($request->all(),
-            [
-                'name'          => 'required|min:3|max:255',
-                'photo'         => 'required|min:3|max:255',
-                'price'         => 'required',
-                'description'   => 'required',
-                'restaurant_id' => 'required|exists:restaurants,id',
-            ],
-            [
-                "required"      => ":attribute é obrigatorio",
-                "min"           => ":attribute requer no minimo :min caracteres",
-                "max"           => ":attribute requer no maximo :max caracteres",
-                "exists"        => ":attribute não existe",
-            ]
+    function validator($request, $rules) {
+        return Validator::make(
+            ProductValidator::getParams($request),
+            $rules,
+            ProductValidator::messages()
         );
-
-        return $validator;
     }
 
 }
