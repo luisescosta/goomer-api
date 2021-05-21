@@ -60,21 +60,50 @@ Method: `POST`
 body:
 ```json
 {
-	"name": "Luis Food",
-	"photo": "www.url.photo.com.br",
-	"street": "Rua Goomer",
-	"number": "33",
-	"neighborhood": "Goomer",
-	"hours" : [{
-				"day": 1,
-				"from": 11,
-				"to": 14
-			},
-			{
-				"day": 2,
-				"from": 11,
-				"to": 14
-			}]
+    "name": "Goomer Food",
+    "photo": "photo.goomer.com.br",
+    "street": "Rua Goomer",
+    "number": "333",
+    "neighborhood": "Goomer",
+    "hours" : [{
+        "day": 1,
+        "from": "11:11",
+        "to": "14:00"
+    },
+        {
+            "day": 2,
+            "from": "11:00",
+            "to": "14:00"
+        }]
+}
+```
+
+
+#### Alterar restaurante por `:ID`
+
+Url: `localhost:8000/api/v1/restaurants/1`
+
+Method: `PUT`
+
+Body:
+
+```json
+{
+    "name": "Goomer Food",
+    "photo": "www.url2.photo.com.br",
+    "street": "Rua Goomer Update",
+    "number": "404",
+    "neighborhood": "Goomer Update",
+    "hours" : [{
+        "day": 3,
+        "from": "11:11",
+        "to": "14:00"
+    },
+        {
+            "day": 4,
+            "from": "11:00",
+            "to": "14:00"
+        }]
 }
 ```
 
@@ -93,41 +122,6 @@ Method: `GET`
 Url: `localhost:8000/api/v1/restaurants`
 
 Method: `GET`
-
-
-#### Alterar restaurante por `:ID`
-
-Url: `localhost:8000/api/v1/restaurants/1`
-
-Method: `PUT`
-
-Body:
-
-```json
-{
-	"name": "Goomer Food",
-	"photo": "www.url2.photo.com.br",
-	"street": "Rua da Goomer API",
-	"number": "32",
-	"neighborhood": "Goomer",
-	"hours" : [{
-				
-				"day": 4,
-				"from": 9,
-				"to": 14
-			},
-			{
-				"day": 5,
-				"from": 12,
-				"to": 14
-			}, 
-            {
-				"day": 6,
-				"from": 12,
-				"to": 22
-			}]
-}
-```
 
 #### Remover restaurante por `:ID`
 
