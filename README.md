@@ -142,15 +142,62 @@ Url: `localhost:8000/api/v1/products`
 
 Method: `POST`
 
+Body:
+
 ```json
 {
-	"name": "Arroz",
-	"photo": "url.arroz.photo.com.br",
-	"description": "descricao Arroz",
-	"price": 3.10,
-	"restaurant_id": 1
+    "name": "Suco de Uva",
+    "photo": "url.photo.com.br",
+    "category" : "Suco",
+    "price": 3.60,
+    "promotional_price": 3.0,
+    "promotional_description" : "Suco do DIA!",
+    "active_promotion" : true,
+    "hours_promotion" : [{
+        "day": 1,
+        "from": "12:15",
+        "to": "13:17"
+    },
+        {
+            "day": 4,
+            "from": "11:10",
+            "to": "11:25"
+        }],
+    "restaurant_id": 5
 }
 ```
+#### Alterar produto por `:ID`
+
+Url: `localhost:8000/api/v1/products/1`
+
+Method: `PUT`
+
+Body:
+
+```json
+{
+    "name": "Suco de Uva Update",
+    "photo": "url.update.photo.com.br",
+    "category" : "Suco",
+    "price": 5.10,
+    "promotional_price": 3.0,
+    "promotional_description" : "Suco do DIA!",
+    "active_promotion" : false,
+    "hours_promotion" : [{
+        "day": 1,
+        "from": "12:15",
+        "to": "13:17"
+        },
+        {
+            "day": 4,
+            "from": "11:10",
+            "to": "11:25"
+        }
+    ],
+    "restaurant_id": 1
+}
+```
+
 
 #### Listar produto por `:ID`
 
