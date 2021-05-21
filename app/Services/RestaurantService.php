@@ -21,7 +21,7 @@ class RestaurantService extends Service implements IRestaurantService
 
     function store(Request $request){
 
-        $validator = $this->validator($request, RestaurantValidator::$create);
+        $validator = $this->validator($request, RestaurantValidator::create());
 
         if($validator->fails()){
             return $validator->errors();
@@ -39,7 +39,7 @@ class RestaurantService extends Service implements IRestaurantService
     }
 
     function update(Request $request, $id){
-        $validator = $this->validator($request, RestaurantValidator::$update);
+        $validator = $this->validator($request, RestaurantValidator::update());
 
         if($validator->fails()){
             return $validator->errors();
@@ -62,7 +62,7 @@ class RestaurantService extends Service implements IRestaurantService
         $validator = Validator::make(
             RestaurantValidator::getParams($request),
             $rules,
-            RestaurantValidator::$messages
+            RestaurantValidator::messages()
         );
 
         return $validator;
