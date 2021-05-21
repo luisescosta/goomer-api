@@ -56,7 +56,7 @@ class ProductController extends BaseController
             );
         }
         return new JsonResponse([
-            "message" => "Cadastro realizado com sucesso",
+            "message" => "Cadastro atualiado com sucesso",
             "data" => $product], 201, []
         );
     }

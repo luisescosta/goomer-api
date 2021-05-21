@@ -62,9 +62,5 @@ abstract class Repository implements IRepository
         return $this->model->getFillable();
     }
 
-    abstract function store(Array $array);
-
-    abstract function update(Array $array, $id);
-
     abstract function model(): string;
 }

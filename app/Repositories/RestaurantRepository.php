@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 
+use App\Dto\RestaurantDto;
 use App\Models\Restaurant;
 use App\Repositories\Interfaces\IRestaurantRepository;
 
@@ -12,18 +13,52 @@ class RestaurantRepository extends Repository implements IRestaurantRepository
 
     function all()
     {
-        return $this->model->with('products')->get();
+        $restaurants = $this->model->with('products')->get();
+        $restaurants->map(function($restaurant) {
+            !$restaurant->hours ?: $restaurant->hours = json_decode($restaurant->hours);
+            $restaurant->products->map(function ($product) {
+                !$product->hours_promotion ?: $product->hours_promotion = json_decode($product->hours_promotion);
+            });
+        });
+        return $restaurants;
     }
 
-    function store(Array $array){
-        return $this->model->create($array);
+    function show($id){
+        try {
+            $restaurant = $this->model->find($id);
+            !$restaurant->hours ?: $restaurant->hours = json_decode($restaurant->hours);
+            return $restaurant;
+        } catch (\Exception $exception){
+            return new \Exception ('Não foi possivel recuperar registro');
+        }
     }
 
-    function update(Array $array, $id){
-        $restaurant = $this->model->find($id);
-        $restaurant->update($array);
+    function store(RestaurantDto $restaurantDto){
+        try {
+            $restaurant = $this->model->create($restaurantDto->getRestaurant());
+            !$restaurant->hours ?: $restaurant->hours = json_decode($restaurant->hours);
+            return $restaurant;
+        } catch (\Exception $exception){
+            return new \Exception ('Não foi possivel cadastrar registro');
+        }
+    }
 
-        return $restaurant;
+
+
+    function update(RestaurantDto $restaurantDto){
+        try {
+            $restaurant = $this->model->find($restaurantDto->id);
+
+            if(!$restaurant){
+                return new \Exception ('ID não é valido');
+            }
+
+            $restaurant->update($restaurantDto->getRestaurant());
+            !$restaurant->hours ?: $restaurant->hours = json_decode($restaurant->hours);
+            return $restaurant;
+        } catch (\Exception $exception){
+            return new \Exception ('Não foi possivel atualizar registro');
+        }
     }
 
     function model(): string {

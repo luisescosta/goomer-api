@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Dto\RestaurantDto;
 use App\Repositories\Interfaces\IRestaurantRepository;
 use App\Services\Interfaces\IRestaurantService;
+use App\Validators\RestaurantValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,47 +21,48 @@ class RestaurantService extends Service implements IRestaurantService
 
     function store(Request $request){
 
-        $validator = $this->validator($request);
+        $validator = $this->validator($request, RestaurantValidator::$create);
 
         if($validator->fails()){
             return $validator->errors();
         }
 
-        $restaurant = $request->only(['photo', 'name', 'street', 'number', 'neighborhood', 'hours']);
-
-        $restaurant['hours'] = json_encode($request->hours);
+        $restaurant = new RestaurantDto(
+            $request->photo,
+            $request->name,
+            $request->street,
+            $request->number,
+            $request->neighborhood,
+            $request->hours
+        );
         return $this->repository->store($restaurant);
     }
 
     function update(Request $request, $id){
-        $validator = $this->validator($request);
+        $validator = $this->validator($request, RestaurantValidator::$update);
 
         if($validator->fails()){
             return $validator->errors();
         }
 
-        $restaurant = $request->only(['photo', 'name', 'street', 'number', 'neighborhood', 'hours']);
+        $restaurant = new RestaurantDto(
+            $request->photo,
+            $request->name,
+            $request->street,
+            $request->number,
+            $request->neighborhood,
+            $request->hours
+        );
+        $restaurant->addId($id);
 
-        return $this->repository->update($restaurant, $id);
+        return $this->repository->update($restaurant);
     }
 
-    function validator($request) {
-
-        $validator = Validator::make($request->all(),
-            [
-                'name'          => 'required|min:3|max:255',
-                'photo'         => 'required|min:3|max:255',
-                'street'        => 'required|min:3|max:255',
-                'number'        => 'required|min:3|max:255',
-                'neighborhood'  => 'required|min:3|max:255',
-                'hours'         => 'required|array'
-            ],
-            [
-                'required'      => ':attribute é obrigatorio',
-                'min'           => ':attribute requer no minimo :min caracteres',
-                'max'           => ':attribute requer no maximo :max caracteres',
-                'array'          => ':attribute não está no formato array'
-            ]
+    function validator($request, $rules) {
+        $validator = Validator::make(
+            RestaurantValidator::getParams($request),
+            $rules,
+            RestaurantValidator::$messages
         );
 
         return $validator;
